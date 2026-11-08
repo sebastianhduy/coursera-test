@@ -160,6 +160,82 @@ button,input,select{font:inherit}button{cursor:pointer}a{color:inherit}svg{displ
 #photo-lightbox .lb-foot{text-align:center;font-size:11px;padding:5px}
 #photo-lightbox .lb-foot a{color:#fff}
 @media(min-width:700px){.gallery-hero{height:385px}.gallery-thumb{width:108px;height:78px;min-width:108px}}
+
+/* Accesibilidad móvil: tipografía más grande sin perder la agenda compacta. */
+html{-webkit-text-size-adjust:100%}
+body{font-size:17px;line-height:1.5}
+.brand strong{font-size:19px;letter-spacing:-.2px}
+.brand span span{font-size:12px;line-height:1.3}
+.brandmark{width:35px;height:35px}
+.icon-button{width:44px;height:44px}
+.topline{font-size:13px}
+.headline{font-size:27px;line-height:1.16}
+.subtitle{font-size:15px;line-height:1.5}
+.date{flex-basis:54px;height:66px}
+.date .dow{font-size:12px}
+.date .num{font-size:24px}
+.date-month{font-size:13px}
+.sectionrow h2,.group-title h3{font-size:19px}
+.counter{font-size:13px;padding:5px 7px}
+.notice{font-size:15px}
+.event{grid-template-columns:55px minmax(0,1fr);gap:5px;padding:9px 0}
+.time{font-size:15px;padding-top:12px}
+.event-main{padding:12px 11px}
+.eyebrow{font-size:12px;letter-spacing:.15px}
+.event-title{font-size:18px;line-height:1.3;margin:5px 0}
+.event-desc{font-size:15px;line-height:1.42}
+.action-link{font-size:14px;min-height:49px;gap:4px;padding:7px 2px}
+.action-link svg{width:16px;height:16px}
+.label-pill{font-size:12px;line-height:1.5}
+.empty,.loading{font-size:16px}
+.searchfield input{height:50px;font-size:17px}
+.filter{font-size:14px;min-height:44px}
+.results-summary{font-size:14px}
+.back{font-size:16px;min-height:49px}
+.detail-hero{padding:17px 14px}
+.detail-hero h1{font-size:29px;line-height:1.18}
+.meta{font-size:15px}
+.location-line{font-size:16px;line-height:1.5}
+.cta{font-size:15px;min-height:49px}
+.reading-section{padding:16px 14px}
+.reading-section h2{font-size:15px}
+.reading-section p{font-size:17px;line-height:1.62}
+.encyclopedia h2{font-size:20px}
+.encyclopedia p{font-size:18px;line-height:1.67}
+.fact{padding:11px}
+.fact strong{font-size:13px}
+.fact span{font-size:16px;line-height:1.5}
+.decision label{font-size:16px}
+.decision select{font-size:17px;min-height:49px}
+.decision p{font-size:14px}
+.infoitem h3{font-size:18px}
+.infoitem p{font-size:16px}
+.mapcard p{font-size:14px}
+.mapcard a,.quiet-link{font-size:15px}
+.navlink{font-size:13px;min-height:67px;line-height:1.2}
+.navlink svg{width:23px;height:23px}
+.toast{font-size:15px}
+.gallery-toolbar{font-size:15px}
+.gallery-toolbar button{font-size:14px;min-height:44px}
+.gallery-caption{font-size:14px;line-height:1.5}
+.photo-hint,.fx-caption{font-size:14px}
+#photo-lightbox .lb-top,#photo-lightbox .lb-foot{font-size:15px}
+#photo-lightbox .lb-top button,#photo-lightbox .lb-actions button{font-size:16px;min-height:44px}
+@media(min-width:750px){
+  .headline{font-size:30px}
+  .event-title{font-size:19px}
+  .reading-section p{font-size:18px}
+}
+@media(max-width:370px){
+  .event{grid-template-columns:49px minmax(0,1fr);gap:4px}
+  .event-main{padding:10px 9px}
+  .action-link{font-size:13px;gap:2px}
+  .action-link svg{width:14px;height:14px}
+  .detail-hero h1{font-size:26px}
+  .cta{font-size:14px;padding:7px 4px}
+  .brand strong{font-size:18px}
+}
+
 </style>
 </head>
 <body>
@@ -168,7 +244,6 @@ button,input,select{font:inherit}button{cursor:pointer}a{color:inherit}svg{displ
       <a href="#dia/2026-12-28" class="brand" style="text-decoration:none" aria-label="México a mano, ir al inicio"><span class="brandmark"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21V8l9-5 9 5v13M3 11h18M9 21v-7h6v7"/></svg></span><span><strong>México a mano</strong><span>CDMX · 28 DIC – 13 ENE</span></span></a>
       <button id="refresh" class="icon-button" title="Volver a cargar la guía" aria-label="Volver a cargar la guía"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 11a8 8 0 1 0-2 5.4M20 4v7h-7"/></svg></button>
     </header>
-    <div id="preview-notice"></div>
     <main id="content" aria-live="polite"><div class="loading"><div class="spinner"></div><div>Cargando tu viaje…</div></div></main>
   </div>
   <nav id="nav" class="bottomnav" aria-label="Navegación principal"></nav>
@@ -366,7 +441,7 @@ button,input,select{font:inherit}button{cursor:pointer}a{color:inherit}svg{displ
     document.addEventListener('change',event=>{if(event.target.matches('select[data-row]'))saveDecision(Number(event.target.dataset.row),event.target.value,event.target);});
     window.addEventListener('hashchange',()=>{if(S.loaded){render();window.scrollTo({top:0,behavior:'instant'});}});
     $('refresh').addEventListener('click',fetchData);
-    window.addEventListener('trip-unlocked',()=>{$('preview-notice').innerHTML='<div class="preview-banner"><b>Guía personal.</b> Copia del 7/11/2026. Los cambios se guardan en este teléfono, sin sincronización con Google Sheets.</div>';fetchData()});
+    window.addEventListener('trip-unlocked',()=>{fetchData()});
     // La guía se inicia cuando se descifran los datos.
   })();
   </script>
