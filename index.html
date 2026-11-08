@@ -456,6 +456,19 @@ body{font-size:17px;line-height:1.5}
   const payload=JSON.parse(document.getElementById('encrypted-data').textContent);
   const cacheKey='mexico-a-mano-final-v5';
   const b64=s=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')+'==='.slice(0,(4-s.length%4)%4)),c=>c.charCodeAt(0));
+  function landingDay(days){
+    const p=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/Mexico_City',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).map(x=>[x.type,x.value]));
+    const today=p.year+'-'+p.month+'-'+p.day;
+    const dates=days.map(d=>d.iso).filter(Boolean).sort();
+    return dates.includes(today)?today:(today<dates[0]?dates[0]:dates[dates.length-1]);
+  }
+  function normalizeStartDate(days){
+    const hash=location.hash;
+    // Al iniciar una sesión, no reutilizar una fecha de prueba que quedó en la URL.
+    if(!hash||hash.startsWith('#unlock/')||/^#dia\/\d{4}-\d{2}-\d{2}$/.test(hash)){
+      history.replaceState(null,'',location.pathname+location.search+'#dia/'+landingDay(days));
+    }
+  }
   async function unlock(pass){
     const material=await crypto.subtle.importKey('raw',new TextEncoder().encode(pass),'PBKDF2',false,['deriveKey']);
     const k=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(payload.s),iterations:240000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['decrypt']);
@@ -464,8 +477,7 @@ body{font-size:17px;line-height:1.5}
     if(!Array.isArray(data.days)||data.days.length!==17)throw Error('Datos incorrectos');
     window.__PREVIEW_TRIP__=data;
     localStorage.setItem(cacheKey,JSON.stringify(data));
-    if(location.hash.startsWith('#unlock/'))history.replaceState(null,'',location.pathname+'#dia/2027-01-04');
-    if(!location.hash)history.replaceState(null,'',location.pathname+'#dia/2027-01-04');
+    normalizeStartDate(data.days);
     window.dispatchEvent(new Event('trip-unlocked'));
   }
   function lockScreen(message=''){
@@ -473,7 +485,7 @@ body{font-size:17px;line-height:1.5}
     document.getElementById('unlock-form').addEventListener('submit',async e=>{e.preventDefault();const input=document.getElementById('pass');document.getElementById('error').textContent='Abriendo…';try{await unlock(input.value.trim())}catch(err){document.getElementById('error').textContent='Clave incorrecta o datos ilegibles.'}});
   }
   const cached=localStorage.getItem(cacheKey);
-  if(cached){try{const parsed=JSON.parse(cached);if(Array.isArray(parsed.activities)&&parsed.activities.length===46){window.__PREVIEW_TRIP__=parsed;if(!location.hash)history.replaceState(null,'',location.pathname+'#dia/2027-01-04');window.dispatchEvent(new Event('trip-unlocked'));return}}catch(e){}}
+  if(cached){try{const parsed=JSON.parse(cached);if(Array.isArray(parsed.activities)&&parsed.activities.length===46){window.__PREVIEW_TRIP__=parsed;normalizeStartDate(parsed.days);window.dispatchEvent(new Event('trip-unlocked'));return}}catch(e){}}
   if(location.hash.startsWith('#unlock/')){let k=decodeURIComponent(location.hash.slice(8));unlock(k).catch(()=>lockScreen('No se pudo abrir con esa clave.'));return}
   lockScreen();
 })();
